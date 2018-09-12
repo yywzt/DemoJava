@@ -1,7 +1,5 @@
 package com.example;
 
-import java.util.Arrays;
-
 /**
  * 排序算法
  * */
@@ -12,7 +10,9 @@ public class sort {
     public static void main(String[] args){
 //       selectSort(a);
 //        Arrays.sort(a);
+        print();
         quickSort(a,0,a.length-1);
+        print();
     }
 
     public static void print(){
@@ -51,10 +51,12 @@ public class sort {
             int temp; // 记录临时中间值
             int i = start, j = end;
             do {
-                while ((numbers[i] < base) && (i < end))
+                while ((numbers[i] < base) && (i < end)) {
                     i++;
-                while ((numbers[j] > base) && (j > start))
+                }
+                while ((numbers[j] > base) && (j > start)) {
                     j--;
+                }
                 if (i <= j) {
                     temp = numbers[i];
                     numbers[i] = numbers[j];
@@ -63,11 +65,12 @@ public class sort {
                     j--;
                 }
             } while (i <= j);
-            print();
-            if (start < j)
+            if (start < j) {
                 quickSort(numbers, start, j);
-            if (end > i)
+            }
+            if (end > i) {
                 quickSort(numbers, i, end);
+            }
         }
     }
 }
