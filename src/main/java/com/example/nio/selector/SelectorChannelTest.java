@@ -50,14 +50,14 @@ public class SelectorChannelTest {
                     System.out.println("received ： " + new String(readBuffer.array()));
 
                     readBuffer.flip();
-                    key1.interestOps(SelectionKey.OP_WRITE);
+                    key1.interestOps(key1.interestOps()| SelectionKey.OP_WRITE);
                 } else if (key1.isWritable()) {//写就绪
                     // a channel is ready for writing
                     SocketChannel channel1 = (SocketChannel) key1.channel();
                     writeBuffer.rewind();
                     channel1.write(writeBuffer);
                     System.out.println("write ： " + new String(writeBuffer.array()));
-                    key1.interestOps(SelectionKey.OP_READ);
+                    key1.interestOps(key1.interestOps() | SelectionKey.OP_READ);
                 }
                 keyIterator.remove();
             }
