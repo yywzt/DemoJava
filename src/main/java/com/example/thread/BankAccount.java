@@ -1,31 +1,31 @@
 package com.example.thread;
 
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Java线程取款存款
  * */
 public class BankAccount {
-    public static void main(String[] args){
+    public static void main(String[] args) throws InterruptedException {
+        long start = System.currentTimeMillis();
         Account account = new Account();
         Random random = new Random();
-        Deposit deposit1 = new Deposit(account, random.nextInt(100));
-        Deposit deposit2 = new Deposit(account, random.nextInt(100));
-        Deposit deposit3 = new Deposit(account, random.nextInt(100));
-        Deposit deposit4 = new Deposit(account, random.nextInt(100));
-        Withdraw withdraw1 = new Withdraw(account,random.nextInt(100));
-        Withdraw withdraw2 = new Withdraw(account,random.nextInt(100));
-        Withdraw withdraw3 = new Withdraw(account,random.nextInt(100));
-        Withdraw withdraw4 = new Withdraw(account,random.nextInt(100));
-        deposit1.start();
-        deposit2.start();
-        deposit3.start();
-        deposit4.start();
-        withdraw1.start();
-        withdraw2.start();
-        withdraw3.start();
-        withdraw4.start();
+        for(int i=0;i<10;i++){
+//            Deposit deposit = new Deposit(account, random.nextInt(100));
+//            Withdraw withdraw = new Withdraw(account,random.nextInt(100));
+            Deposit deposit = new Deposit(account, ThreadLocalRandom.current().nextInt(100));
+            Withdraw withdraw = new Withdraw(account,ThreadLocalRandom.current().nextInt(100));
+            deposit.start();
+            withdraw.start();
+            deposit.join();
+            withdraw.join();
+        }
+
+        long end = System.currentTimeMillis();
+        System.out.println("start: " + start + "," + "end: " + end );
+        System.out.println("time: " + (end - start));
     }
 }
 
@@ -84,9 +84,11 @@ class Deposit extends Thread{
     public void run() {
         lock.lock();
         try {
-            System.out.print("当前余额：" + account.getMoney() + " 存入：" + money);
-            account.addMoney(money);
-            System.out.println("，成功，余额为" + account.getMoney());
+            for(int i=0;i<10;i++) {
+                System.out.print("当前余额：" + account.getMoney() + " 存入：" + money);
+                account.addMoney(money);
+                System.out.println("，成功，余额为" + account.getMoney());
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }finally {
@@ -114,12 +116,14 @@ class Withdraw extends Thread{
     public void run() {
         lock.lock();
         try {
-            System.out.print("当前余额：" + account.getMoney() + " 取出：" + money);
-            if (account.getMoney() >= money) {
-                account.descMoney(money);
-                System.out.println("，成功，余额为" + account.getMoney());
-            } else {
-                System.out.println("，失败，余额不足");
+            for(int i=0;i<10;i++) {
+                System.out.print("当前余额：" + account.getMoney() + " 取出：" + money);
+                if (account.getMoney() >= money) {
+                    account.descMoney(money);
+                    System.out.println("，成功，余额为" + account.getMoney());
+                } else {
+                    System.out.println("，失败，余额不足");
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
